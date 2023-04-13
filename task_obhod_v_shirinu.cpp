@@ -28,34 +28,44 @@ int pop(queue*& h, queue*& t) {//функция удаления первого элемента из очереди, п
 }
 int main() {
 	queue* h= nullptr;
-	queue* t = nullptr;
+	queue* t = nullptr;//создаём очередь 
 	int n, m, x,k,y,w;
-	vector <vector<int>> Gr;
-
-	cin >> n;
-	int* a = new int[n];
-	for (int i = 0; i < n; i++) a[i] = 0;
-
+	bool fl=true;
+	vector <vector<int>> Gr;//создаём двумерный вектор, выступающий в роли списка смежности
+	cout << "Put a number of nodes" << endl;
+	cin >> n;//спрашиваем число вершин
 	for (int i = 0; i < n; i++) {
 		Gr.push_back(vector<int>());
-		cout << "next ";
+		cout << "Put number of neighbor nodes of node " << i<<" ";
 		cin >> k;
+		cout << i<<"Neighbor nodes: ";
 		for (int j = 0; j < k; j++) {
 			cin >> w;
-			Gr[i].push_back(w);
+			Gr[i].push_back(w);//заполняем список смежности
 		}
 	}
-	cin >> x;
-	a[x] = 1;
-	push(h, t, x);
+	int* a = new int[n];
+	for (int i = 0; i < n; i++) a[i] = 0;//создаём массив а, регистрирующий посещение вершин
+	cout << "Where we would start? ";
+	cin >> x;//спрашиваем, откуда начинаем обход
+	a[x] = 1;//регистрируем посещение начальной вершины
+	push(h, t, x);//и добавляем сам узел в очередь
 	cout << x;
-	while (h) {
-		x=pop(h, t);
-		for (int i = 0; i < Gr[x].size(); i++) {
+	while (h && fl) {
+		x=pop(h, t);//достанем из очереди первый элемент
+		for (int i = 0; i < Gr[x].size(); i++) {//также пройдём по остальным вершинам, смежным с тем, который мы достали из очереди 
 			if (a[Gr[x][i]] == 0) {
 				y = Gr[x][i];
+				a[y] = 1;
 				push(h, t, y);
-				cout << y;
+				cout << y<<" ";//тут операции, аналогичные тем, что мы выполняли для первого элемента
+			}
+		}
+		fl = false;
+		for (int k = 0; k < n; k++) {
+			if (a[k] == 0) {
+				fl = true;//при каждом завершении просмотра элементов, смежных с текущим будем проверять, если мы посетили уже все вершины, если да, то заканчиваем работу
+				break;
 			}
 		}
 	}
